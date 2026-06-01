@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 1 year Anniversary My Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red: #E50914;
+  --bg: #0a0a0a;
+  --surface2: #1c1c1c;
+  --surface3: #252525;
+  --text: #e5e5e5;
+  --text-dim: #808080;
+  --text-muted: #555;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --card-w: 240px;
+  --card-h: 155px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: #000;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* Opening Screen */
+#splash {
+  position: fixed; inset: 0;
+  background: #000; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+#splash.fade-out { animation: fadeOut 0.9s ease forwards; }
+
+@keyframes fadeOut { to { opacity:0; pointer-events:none; } }
+@keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+
+.splash-inner {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2.5rem;
+}
+
+.splash-logo {
+  position: relative; width: 130px; height: 130px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.splash-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid rgba(229,9,20,0.3);
+  animation: ringPulse 2s ease-out infinite;
+}
+.splash-ring:nth-child(2) { animation-delay: 0.5s; }
+.splash-ring:nth-child(3) { animation-delay: 1s; }
+
+@keyframes ringPulse {
+  0%   { transform: scale(0.5); opacity: 1;   border-color: rgba(229,9,20,0.6); }
+  100% { transform: scale(2);   opacity: 0;   border-color: rgba(229,9,20,0); }
+}
+
+.splash-heart {
+  font-size: 4rem; color: var(--red); position: relative; z-index: 2;
+  animation: heartBeat 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(229,9,20,0.7));
+}
+@keyframes heartBeat {
+  0%,100% { transform: scale(1); }
+  14%     { transform: scale(1.15); }
+  28%     { transform: scale(1); }
+  42%     { transform: scale(1.08); }
+  56%     { transform: scale(1); }
+}
+
+.splash-wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem; font-weight: 300;
+  letter-spacing: 0.4em; color: white; text-transform: uppercase;
+  opacity: 0; animation: riseIn 1s ease 0.4s forwards;
+}
+.splash-wordmark span { color: var(--gold); }
+
+.splash-hint {
+  font-size: 0.72rem; letter-spacing: 0.18em;
+  color: var(--text-muted); text-transform: uppercase;
+  opacity: 0; animation: riseIn 1s ease 1.4s forwards;
+}
+
+@keyframes riseIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity:0; transform:translateX(-80px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+
+/* ════════════════════════════════════
+   WHO'S WATCHING
+════════════════════════════════════ */
+#profiles {
+  position: fixed; inset: 0;
+  background: var(--bg); z-index: 900;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3.5rem;
+}
+#profiles.visible { display: flex; animation: fadeIn 0.5s ease; }
+#profiles.fade-out { animation: fadeOut 0.6s ease forwards; }
+
+.profiles-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 300; color: white;
+  letter-spacing: 0.18em; text-transform: uppercase;
+}
+
+.profiles-grid {
+  display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+}
+
+.profile-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0.85rem; cursor: pointer;
+}
+
+.profile-avatar {
+  width: 128px; height: 128px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem;
+  border: 3px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+  overflow: hidden;
+}
+.profile-card:hover .profile-avatar {
+  border-color: white; transform: scale(1.07);
+}
+.profile-avatar.selecting { animation: selectPop 0.35s ease; }
+@keyframes selectPop {
+  0%   { transform: scale(1.07); }
+  50%  { transform: scale(0.94); }
+  100% { transform: scale(1.07); }
+}
+
+/* Avatar colors — swap for background-image if using photos */
+.av-you  { background: linear-gradient(135deg,#1a0a2e,#4a1070); }
+.av-them { background: linear-gradient(135deg,#0a1a2e,#103470); }
+.av-us   { background: linear-gradient(135deg,#2e1a0a,#702040); }
+
+.profile-name {
+  font-size: 0.9rem; color: var(--text-dim); letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.profile-card:hover .profile-name { color: white; }
+
+/* ════════════════════════════════════
+   MAIN APP
+════════════════════════════════════ */
+#app { display: none; opacity: 0; transition: opacity 0.8s ease; }
+#app.visible  { display: block; }
+#app.fade-in  { opacity: 1; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  padding: 1rem 4%;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+  transition: background 0.3s;
+}
+nav.solid { background: var(--bg); }
+
+.logo {
+  font-family: 'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600;
+  letter-spacing:0.08em; color:var(--gold); text-decoration:none;
+}
+.logo span { color:var(--red); }
+
+.nav-right { display:flex; align-items:center; gap:1.5rem; }
+.nav-links { display:flex; gap:2rem; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:0.85rem; letter-spacing:0.05em; transition:color 0.2s; }
+.nav-links a:hover { color:var(--text); }
+
+.nav-profile {
+  width:32px; height:32px; border-radius:4px;
+  border:none; cursor:pointer; background:transparent;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; transition:transform 0.2s;
+}
+.nav-profile:hover { transform:scale(1.12); }
+
+/* ── HERO ── */
+.hero {
+  position:relative; height:90vh; min-height:420px;
+  display:flex; align-items:flex-end; padding:0 4% 5%; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0; z-index:1;
+  background:
+    linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.3) 40%, transparent 70%),
+    linear-gradient(to right, rgba(0,0,0,0.8) 30%, transparent 70%);
+}
+.hero-img {
+  position:absolute; inset:0; z-index:0;
+  background: url('images/main.JPG') center/cover no-repeat;
+  overflow:hidden;
+}
+.hero-img::before {
+  content:''; position:absolute;
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);
+  top:-100px; right:5%; animation:drift 8s ease-in-out infinite alternate;
+}
+.hero-img::after {
+  content:''; position:absolute;
+  width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle,rgba(229,9,20,0.08) 0%,transparent 70%);
+  bottom:10%; left:20%; animation:drift 12s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift {
+  from { transform:translate(0,0); }
+  to   { transform:translate(30px,20px); }
+}
+.hero-placeholder-text {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif; font-size:7rem; font-weight:300;
+  color:rgba(255,255,255,0.04); letter-spacing:0.3em; pointer-events:none;
+}
+
+.hero-content { position:relative; z-index:2; max-width:520px; }
+
+.hero-greeting {
+  font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:0.5rem;
+  opacity:0; animation:riseIn 0.6s ease 0.2s forwards;
+}
+.hero-badge {
+  display:inline-block; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--gold); border:1px solid rgba(201,168,76,0.4);
+  padding:4px 12px; margin-bottom:1rem; border-radius:2px;
+}
+.hero-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3rem,6vw,5.5rem); font-weight:300;
+  line-height:1.05; margin-bottom:0.5rem;
+}
+.hero-title em { font-style:italic; color:var(--gold-light); }
+.hero-subtitle { font-size:0.9rem; color:var(--text-dim); letter-spacing:0.05em; margin-bottom:1.5rem; }
+.hero-meta { display:flex; gap:1.5rem; align-items:center; margin-bottom:1.5rem; }
+.hero-meta span { font-size:0.8rem; color:var(--text-dim); }
+.match-score { color:#46d369; font-size:0.85rem; font-weight:500; }
+.hero-buttons { display:flex; gap:1rem; }
+
+.btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:0.65rem 1.5rem; border:none; border-radius:4px;
+  font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:400;
+  cursor:pointer; text-decoration:none; transition:all 0.2s;
+}
+.btn-primary { background:white; color:black; }
+.btn-primary:hover { background:rgba(255,255,255,0.85); }
+.btn-secondary { background:rgba(109,109,110,0.7); color:white; backdrop-filter:blur(4px); }
+.btn-secondary:hover { background:rgba(109,109,110,0.55); }
+
+/* ── COUNTER ── */
+.counter-section {
+  padding:3rem 4%; display:flex; gap:2rem; align-items:center; flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);
+  margin-bottom:3rem; background:linear-gradient(to right,rgba(201,168,76,0.04),transparent);
+}
+.counter-item { text-align:center; min-width:80px; }
+.counter-num { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; color:var(--gold-light); line-height:1; }
+.counter-label { font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-top:4px; }
+.counter-div { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--text-muted); padding-bottom:1rem; }
+.counter-message { margin-left:auto; font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-style:italic; color:var(--text-dim); max-width:320px; line-height:1.4; text-align:right; }
+
+/* ── ROWS ── */
+.rows-section { padding:0 0 4rem; }
+.row { margin-bottom:3vh; position:relative; }
+.row-header { display:flex; align-items:baseline; gap:1rem; padding:0 4%; margin-bottom:0.75rem; }
+.row-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400; letter-spacing:0.02em; }
+.row-title-accent { color:var(--gold); font-style:italic; }
+.row-explore { font-size:0.75rem; color:#54b3d6; letter-spacing:0.08em; text-decoration:none; opacity:0; transform:translateX(-8px); transition:all 0.3s; }
+.row:hover .row-explore { opacity:1; transform:translateX(0); }
+.row-track { display:flex; gap:6px; padding:0.5rem 4%; overflow-x:auto; scrollbar-width:none; scroll-behavior:smooth; }
+.row-track::-webkit-scrollbar { display:none; }
+
+/* ── CARDS ── */
+.card { flex-shrink:0; width:var(--card-w); height:var(--card-h); border-radius:4px; overflow:hidden; position:relative; cursor:pointer; transition:transform 0.25s ease; }
+.card:hover { transform:scale(1.12); z-index:10; }
+.card-img { width:100%; height:100%; object-fit:cover; display:block; }
+.card-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:0.9rem; font-style:italic; color:rgba(255,255,255,0.5); text-align:center; padding:1rem; }
+.card-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%); opacity:0; transition:opacity 0.25s; display:flex; flex-direction:column; justify-content:flex-end; padding:10px; }
+.card:hover .card-overlay { opacity:1; }
+.card-label { font-size:0.75rem; font-weight:400; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.card-sublabel { font-size:0.65rem; color:var(--text-dim); margin-top:2px; }
+.card-wide { width:380px; }
+
+.bg-1{background:linear-gradient(135deg,#0d1b2a,#1a3a5c)}
+.bg-2{background:linear-gradient(135deg,#1a0a0a,#3d1515)}
+.bg-3{background:linear-gradient(135deg,#0a1a0a,#1a3d1a)}
+.bg-4{background:linear-gradient(135deg,#1a1a0a,#3d3515)}
+.bg-5{background:linear-gradient(135deg,#1a0a1a,#3d153d)}
+.bg-6{background:linear-gradient(135deg,#0a1a1a,#153d3d)}
+.bg-7{background:linear-gradient(135deg,#1a0f0a,#3d2215)}
+.bg-8{background:linear-gradient(135deg,#0f0a1a,#22153d)}
+
+/* ── MODAL ── */
+.modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; backdrop-filter:blur(8px); }
+.modal-backdrop.open { opacity:1; pointer-events:all; }
+.modal { background:var(--surface2); border-radius:8px; width:min(680px,95vw); max-height:90vh; overflow-y:auto; transform:scale(0.92); transition:transform 0.3s; position:relative; }
+.modal-backdrop.open .modal { transform:scale(1); }
+.modal-hero { width:100%; height:500px; position:relative; overflow:hidden; border-radius:8px 8px 0 0; }
+.modal-hero-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:2rem; font-style:italic; color:rgba(255,255,255,0.4); }
+.modal-hero-gradient { position:absolute; bottom:0; left:0; right:0; height:60%; background:linear-gradient(to top,var(--surface2),transparent); }
+.modal-hero-title { position:absolute; bottom:1.5rem; left:1.5rem; font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; z-index:2; }
+.modal-body { padding:0 1.5rem 2rem; }
+.modal-actions { display:flex; gap:0.75rem; padding:1.25rem 1.5rem; align-items:center; }
+.btn-icon { width:38px; height:38px; border-radius:50%; border:2px solid var(--text-dim); background:transparent; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:border-color 0.2s,background 0.2s; }
+.btn-icon:hover { border-color:white; background:rgba(255,255,255,0.1); }
+.modal-meta { display:flex; gap:1rem; flex-wrap:wrap; font-size:0.78rem; color:var(--text-dim); margin-bottom:1rem; }
+.modal-meta .date { color:#46d369; }
+.modal-description { font-size:0.9rem; line-height:1.7; color:var(--text); font-weight:300; }
+.btn-icon.loved { border-color:var(--red); color:var(--red); background:rgba(229,9,20,0.12); transform:scale(1.15); }
+.modal-close { position:absolute; top:1rem; right:1rem; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.6); border:none; color:white; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; transition:background 0.2s; }
+.modal-close:hover { background:rgba(0,0,0,0.9); }
+
+/* ── EDIT BANNER ── */
+.edit-banner { background:rgba(201,168,76,0.08); border:1px dashed rgba(201,168,76,0.3); border-radius:6px; padding:1rem 1.5rem; margin:1.5rem 4%; font-size:0.8rem; color:var(--gold); line-height:1.7; }
+.edit-banner strong { color:var(--gold-light); }
+
+/* ── FOOTER ── */
+footer { padding:3rem 4%; border-top:1px solid rgba(255,255,255,0.05); text-align:center; }
+.footer-logo { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--gold); margin-bottom:0.5rem; }
+.footer-note { font-size:0.75rem; color:var(--text-muted); line-height:1.8; }
+
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:3px; }
+
+@media (max-width:600px) {
+  :root { --card-w:160px; --card-h:105px; }
+  .hero-title { font-size:2.5rem; }
+  .counter-message { margin-left:0; text-align:left; }
+  .card-wide { width:260px; }
+  .nav-links { display:none; }
+  .profiles-grid { gap:1.5rem; }
+  .profile-avatar { width:90px; height:90px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <img src="netflix-logo.png" alt="Our Year" style="width:350px;position:relative;z-index:2;opacity:0;animation:slideInLeft 0.8s ease 0.3s forwards;">
+    </div>
+    <div class="splash-hint">Click anywhere to begin</div>
+  </div>
+</div>
+
+<!-- WHO'S WATCHING -->
+<div id="profiles">
+  <h1 class="profiles-title">Who's watching?</h1>
+  <div class="profiles-grid">
+
+    <div class="profile-card" onclick="selectProfile(this,'Alex','')">
+      <div class="profile-avatar av-you" style="background-image:url('profile/bandal.jpg');background-size:cover;background-position:center;">
+      </div>
+      <div class="profile-name">Alex</div>
+    </div>
+
+    <div class="profile-card" onclick="selectProfile(this,'Claire','')">
+      <div class="profile-avatar av-them" style="background-image:url('profile/kitty.jpg');background-size:cover;background-position:center;">
+      </div>
+      <div class="profile-name">Claire</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app">
+
+<nav id="nav">
+  <a class="logo" href="#"><img src="netflix-logo.png" alt="Our Year" style="height:45px;display:block;"></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#memories">Memories</a></li>
+      <li><a href="#travels">Travels</a></li>
+      <li><a href="#fun">Fun Moments</a></li>
+      <li><a href="#Foodie moments">Foodie Moments</a></li>
+    </ul>
+    <button class="nav-profile" id="nav-avatar" onclick="switchProfile()" title="Switch profile">💫</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-img"><div class="hero-placeholder-text">LOVE</div></div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-greeting" id="hero-greeting">Welcome back</p>
+    <div class="hero-badge">✦ One Year Anniversary</div>
+    <h1 class="hero-title">Our <em>Story</em><br>Begins Here</h1>
+    <p class="hero-subtitle">365 days · Countless unforgettable memories · One love</p>
+    <div class="hero-meta">
+      <span class="match-score">♥ 100% Match</span>
+      <span>Since June 8th, 2025 </span>
+      <span>12 Months</span>
+    </div>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="openVideo()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="black"><polygon points="5,3 19,12 5,21"/></svg>
+        Relive
+      </button>
+      <button class="btn btn-secondary" onclick="openModal('hero')">ℹ More Info</button>
+    </div>
+  </div>
+</section>
+<section class="counter-section">
+  <div class="counter-item"><div class="counter-num" id="cnt-days">365</div><div class="counter-label">Days</div></div>
+  <div class="counter-div">&middot;</div>
+  <div class="counter-item"><div class="counter-num" id="cnt-months">12</div><div class="counter-label">Months</div></div>
+  <div class="counter-div">&middot;</div>
+  <div class="counter-item"><div class="counter-num" id="cnt-hours">8,760</div><div class="counter-label">Hours</div></div>
+  <div class="counter-message">"Every moment with you is a memory worth keeping."</div>
+</section>
+
+<main class="rows-section">
+  <section class="row" id="memories">
+    <div class="row-header">
+      <h2 class="row-title">Our <span class="row-title-accent">Firsts</span></h2>
+      <a class="row-explore" href="#">Explore All &rsaquo;</a>
+    </div>
+    <div class="row-track" id="row-featured"></div>
+  </section>
+  <section class="row" id="travels">
+    <div class="row-header">
+      <h2 class="row-title">Travels <span class="row-title-accent">&amp; Escapes</span></h2>
+      <a class="row-explore" href="#">Explore All &rsaquo;</a>
+    </div>
+    <div class="row-track" id="row-travels"></div>
+  </section>
+  <section class="row" id="fun">
+    <div class="row-header">
+      <h2 class="row-title">Fun <span class="row-title-accent">Moments</span></h2>
+      <a class="row-explore" href="#">Explore All &rsaquo;</a>
+    </div>
+    <div class="row-track" id="row-fun"></div>
+  </section>
+
+  <section class="row">
+    <div class="row-header">
+      <h2 class="row-title">We <span class="row-title-accent">떵개ed</span></h2>
+      <a class="row-explore" href="#">Explore All &rsaquo;</a>
+    </div>
+    <div class="row-track" id="row-food"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-logo">♥ Our Year</div>
+  <p class="footer-note">Made with love for the sweetest boy to ever exist in this world.</p>
+</footer>
+
+</div><!-- /#app -->
+
+<!-- VIDEO OVERLAY -->
+<div id="video-overlay" onclick="closeVideoOnBackdrop(event)" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;">
+  <button onclick="closeVideo()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;z-index:10;">✕</button>
+  <video id="relive-video" controls style="max-width:90vw;max-height:85vh;border-radius:8px;outline:none;">
+    <source src="/0524.mov" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hero">
+      <div class="modal-hero-placeholder" id="modal-ph"></div>
+      <div class="modal-hero-gradient"></div>
+      <h2 class="modal-hero-title" id="modal-title"></h2>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" style="padding:0.55rem 1.2rem;font-size:0.85rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="black"><polygon points="5,3 19,12 5,21"/></svg>
+        View Memory
+      </button>
+      <button class="btn-icon" id="heart-btn" onclick="toggleHeart()" title="Love this memory">♥</button>
+      <button class="btn-icon" style="font-size:1rem;">↗</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="date" id="modal-date"></span>
+        <span id="modal-cat"></span>
+        <span>★★★★★</span>
+      </div>
+      <p class="modal-description" id="modal-desc"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// SYNTHESIZED INTRO SOUND — Web Audio API
+// Two-hit "ta-dum" approximation; no copyrighted audio
+// ══════════════════════════════════════════════════════
+function playIntroSound() {
+  const audio = new Audio('flix.mp3');
+  audio.play().catch(() => {});
+}
+
+// ══════════════════════════════════════════════════════
+// SPLASH → PROFILES → APP
+// ══════════════════════════════════════════════════════
+const splashEl   = document.getElementById('splash');
+const profilesEl = document.getElementById('profiles');
+const appEl      = document.getElementById('app');
+let splashGone = false;
+
+splashEl.addEventListener('click', () => {
+  if (splashGone) return;
+  splashGone = true;
+  playIntroSound();
+  splashEl.classList.add('fade-out');
+  setTimeout(() => {
+    splashEl.style.display = 'none';
+    profilesEl.classList.add('visible');
+  }, 900);
+});
+
+let currentProfile = { name:'You', emoji:'💫' };
+let rowsBuilt = false;
+
+function selectProfile(card, name, emoji) {
+  currentProfile = { name, emoji };
+  card.querySelector('.profile-avatar').classList.add('selecting');
+  setTimeout(() => {
+    profilesEl.classList.add('fade-out');
+    setTimeout(() => {
+      profilesEl.style.display = 'none';
+      profilesEl.classList.remove('visible','fade-out');
+      launchApp(name, emoji);
+    }, 600);
+  }, 350);
+}
+
+function launchApp(name, emoji) {
+  document.getElementById('nav-avatar').textContent = emoji;
+  document.getElementById('hero-greeting').textContent = `Welcome back, ${name}`;
+  document.body.style.background = 'var(--bg)';
+  appEl.classList.add('visible');
+  requestAnimationFrame(() => requestAnimationFrame(() => appEl.classList.add('fade-in')));
+  updateCounter();
+  if (!rowsBuilt) { buildAllRows(); rowsBuilt = true; }
+}
+
+function switchProfile() {
+  appEl.style.transition = 'opacity 0.4s';
+  appEl.style.opacity = '0';
+  setTimeout(() => {
+    appEl.classList.remove('visible','fade-in');
+    appEl.style.opacity = '';
+    profilesEl.style.display = '';
+    profilesEl.classList.add('visible');
+  }, 400);
+}
+
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
+const START_DATE = new Date('2025-06-08'); // ← YOUR ANNIVERSARY DATE HERE
+
+// To swap in a real photo, replace the img filename with your actual file
+// (e.g. img:'f1.jpg') and drop the image into the 1yearwalex folder.
+const memories = {
+  featured: [
+    { id:'f1', title:'Our first meal at Olle', date:'June 2025', category:'Origin Story', bg:'bg-1', wide:true, img:'images/firsts/firstmeal.jpg',
+      desc:'Our very first meal! I still remember your shy look that you gave me as you were 야무지게 뜯어먹어ing your Kalbi' },
+    { id:'f2', title:'First time holding hands', date:'June 2025', category:'Flattering moments', bg:'bg-2', img:'images/firsts/holdinghands.jpg',
+      desc:'Windows down, we kept our hands closely clasped to each others' },
+    { id:'f3', title:'Photobooth', date:'September 2025', category:'Anniversary', bg:'bg-5', img:'images/firsts/photobooth.jpg',
+      desc:'First photobooth together after getting food with Sua and Luciana! I think we kissed in public for the first time this day too:)' },
+    { id:'f4', title:'50 Days', date:'July 2025', category:'Anniversary', bg:'bg-3', img:'images/firsts/50days.JPG',
+      desc:'이날 우리 엽떡 먹으면서 영화 봤던 거 기억나??' },
+    { id:'f5', title:'8/15/2025', date:'August 2025', category:'Birthday', bg:'bg-4', img:'images/firsts/alexbday.JPG',
+      desc:'Albeit this celebration being on the day of your birthday, celebrating your birthday with people that love you felt like such a blessing. I want to celebrate your birthday with you for as long as I can <3' },
+    { id:'f6', title:'100 Days', date:'September 2025', category:'Anniversary', bg:'bg-5', img:'images/firsts/100days.jpg',
+      desc:'May I be your Daisy forever? I loved the steak and flower you got me this day.' },
+    { id:'f7', title:'10/03/2025', date:'October 2025', category:'Birthday', bg:'bg-6', img:'images/firsts/clairebirthday.JPG',
+      desc:'I felt so loved and seen having you by my side preparing to host my birthday party at my place for the first time. My 20th started off strong because of you. Thank you my Love<3 ' },
+    { id:'f8', title:'Popeye and Bootybep', date:'October 2025', category:'Halloween', bg:'bg-6', img:'images/firsts/halloween1.JPG',
+      desc:'Bring your spinach next time Popeye!' },
+    { id:'f9', title:'Hunter and Deer', date:'October 2025', category:'Halloween', bg:'bg-6', img:'images/firsts/halloween2.jpg', imgPosition:'50% 20%',
+      desc:'It was such a thrilling moment to get hunted and eaten by you:)' },
+    { id:'f10', title:'How Alex Met Mr and Mrs Oh', date:'November 2026', category:'Milestone', bg:'bg-6', img:'images/firsts/IMG_1160.JPG',
+      desc:'You seeing my parents for the first time! I hope you are less nervous when you see them now because they love you!' },
+    { id:'f11', title:'First Christmas', date:'December 2026', category:'Milestone', bg:'bg-6', img:'images/firsts/IMG_1762.jpg',
+      desc: 'Our first Christmas together! We need to go back to RH Rooftop for their truffle fries.' },
+    { id:'f12', title:'First Flight', date:'January 2026', category:'Milestone', bg:'bg-6', img:'images/firsts/firstflight.jpg',
+      desc:'On our way to London to make countless unforgettable memories together! I do not know if you notice but I was so 도키도키 on the plane:)' },
+    { id:'f13', title:'First Valentines', date:'Feburary 2026', category:'Valentines', bg:'bg-6', img:'images/firsts/valentines.jpg', imgPosition: '50% 20%' ,
+      desc:'May I be your Valentines for the rest of your life?' },
+    { id:'f14', title:'First Date in Korea', date:'July 2026', category:'Date', bg:'bg-6', img:'images/firsts/aquarium.JPG',
+      desc:'I think 망둥어 was the cutest out of all sea creatures we saw except Belluga' },
+
+  ],
+  travels: [
+    { id:'a1', title:'Edinburgh', date:'January 2026', category:'Travel', bg:'bg-2', img:'/images/travels/1edin.JPG', },
+    { id:'a2', title:'Milan', date:'January 2026', category:'Travel', bg:'bg-3', img:'/images/travels/2milan.jpg',},
+    { id:'a3', title:'Denmark', date:'Feburary 2026', category:'Travel', bg:'bg-7', img:'/images/travels/3denmark.jpg', },
+    { id:'a4', title:'Stonehenge', date:'March 2026', category:'Travel', bg:'bg-8', img:'/images/travels/4stonehenge.jpg',},
+    { id:'a5', title:'Morocco', date:'March 2026', category:'Travel', bg:'bg-1', img:'/images/travels/5morocco.jpg',},
+    { id:'a6', title:"Paris", date:'March 2026', category:'Travel', bg:'bg-5', img:'/images/travels/6paris.jpg',},
+    { id:'a7', title:"Bath", date:'March 2026', category:'Travel', bg:'bg-5', img:'/images/travels/7bath.jpg',},
+    { id:'a8', title:"Mallorca", date:'April 2026', category:'Travel', bg:'bg-5', img:'/images/travels/8mallorca.jpg',},
+    { id:'a9', title:"Dublin", date:'April 2026', category:'Travel', bg:'bg-5', img:'/images/travels/9dublin.jpg',},
+    { id:'a10', title:"Venice", date:'April 2026', category:'Travel', bg:'bg-5', img:'/images/travels/11venice.jpg',},
+    { id:'a11', title:"Seven Sisters", date:'May 2026', category:'Travel', bg:'bg-5', img:'/images/travels/10sevensis.jpg',},
+  ],
+  fun: [
+    { id:'q1', title:'Doing The Dishes Together', date: 'October 2025', category: 'Wholesome', bg:'bg-3', img:'/images/fun/dish.JPG',
+      desc:'Doing dishes while everyone is watching after making dumplings...Would you keep your promise to hug me from the back everytime I do the dishes for lifelong time?' },
+    { id:'q2', title:'Skincare Time', date: 'January 2026', category: 'Wellness', bg:'bg-4', img:'/images/fun/facemask.jpg',
+      desc:'Doing your skincare is one of my favorite things to do! Let me do more skincare on you:)' },
+    { id:'q3', title:'GOO GOO ATTACK', date: 'November 2025', category: 'Wholesome', bg:'bg-5', img:'/images/fun/googoo.jpg',
+      desc:'Goo Goo attacking us while we were helping Joline film her music video for class' },
+    { id:'q4', title:'Bawling after Our Favorite Broadway Show', date: 'January 2026', category: 'Broadway Show', bg:'bg-8', img:'/images/fun/maybehappyending.jpg',
+      desc:"When the lights are off and the city is quiet and the conversation goes to all the real places." },
+    { id:'q5', title:'Always a Good Sleep Next to You', date: 'Always', category: 'Wellness', bg:'bg-6', img:'/images/fun/sleep.JPG',
+      desc:"Falling asleep next to you is my favorite activity. I feel so secure in every way." },
+    { id:'q6', title:'버억', date: 'April 2026', category: '', bg:'bg-2', img:'/images/fun/waang.jpg',
+      desc:'Cafe Florian in Venice:) We had the best straberry parfait' },
+    { id:'q7', title:'Holding Each Other Tight', date: 'October 2025', category: 'Wholesome', bg:'bg-2', img:'/images/fun/wholesome.JPG',
+      desc:'Probably one of my happiest moment in 2025. We were on the Brooklyn Ferry, holding tight on each other, albeit non-verbal, reassured me of the love we share in the most intimate way.' },
+    { id:'q8', title:'And If the Double Decker Bus Crashes into Us', date: 'January 2026', category: 'Wholesome', bg:'bg-2', img:'/images/fun/doubledecker.jpg',
+      desc:'What a thrill it is to sit on the staircase of a moving double decker bus!' },
+    { id:'q9', title:'Gogupnam(Gogi Grilling Namja)', date: 'July 2025', category: 'Cool', bg:'bg-2', img:'/images/fun/gogupnam.jpg.jpeg',
+      desc:'고기 구울 떄 가장 멋있는 남자. 천 태 균' },
+    { id:'q10', title:'In Another Universe, We are Hello Kitties', date: 'August 2025', category: 'Cute', bg:'bg-2', img:'/images/fun/hellokitty.JPG', imgPosition: '50% 20%', modalSize:'contain',
+      desc:'We are just so cute.' },
+    { id:'q11', title:'자기가 나온 영화를 모니터링하는 알렉이', date: 'Feburary 2026', category: 'Cute', bg:'bg-2', img:'/images/fun/webearbears.jpg',
+      desc:'Watching you watch We Bear Bears was the cutest thing ever. I wanted to eat you.' },
+    { id:'q12', title:'Naksan Park Date', date: 'July 2025', category: 'Date', bg:'bg-2', img:'/images/fun/naksan.jpg',
+      desc:'' },
+    { id:'q13', title:'Harmless Smile', date: 'idk', category: 'Cute', bg:'bg-2', img:'/images/fun/harmlesssmile.jpg', imgPosition:'50% 20%',
+      desc:'넌 웃을 떄가 가장 사랑스러워. 세상 무해해. 그러니까 많이 웃어줘 내가 마니 웃게 해줄께!' },
+    { id:'q14', title:'Alexinyork', date: 'idk', category: 'Funny', bg:'bg-2', img:'/images/fun/IMG_5025.jpg',
+      desc:'minainyork 닮게 나온 너 ㅎㅎ' },
+    { id:'q15', title:'When You Almost Flashed Me in Front of Everyone', date: 'October 2025', category: '아찔한 사고', bg:'bg-2', img:'/images/fun/popeye.jpeg',
+      desc:'Watching you watch We Bear Bears was the cutest thing ever. I wanted to eat you.' },
+  ],
+  food: [
+    { id:'fd1', title:'kisa', date:'June 2025', category:'Lunch', bg:'bg-2', img:'images/food/kisa.jpg',
+      desc:'Our third meal together!' },
+    { id:'fd2', title:'duo cafe', date:'June 2025', category:'Dessert', bg:'bg-4', img:'/images/food/duocafe.jpg',
+      desc:'I crave their sweet potato icecream time to time. Time to go back. We also held hands for the first time right after leaving this cafe.' },
+    { id:'fd3', title:'Chimichuri and Steak at 8282', date:'2025', category:'Dinner', bg:'bg-3', img:'/images/food/8282.jpg',
+      desc:'I still think about this dish sometimes. We should totes go back!' },
+    { id:'fd4', title:'Buvette', date:'2025', category:'Brunch', bg:'bg-7', img:'/images/food/buvette.jpg',
+      desc:'This day I took you to my favorite brunch place in West Village. We need to go back for their french toast and croque monsieur.' },
+    { id:'fd5', title:'The Dollar Shop', date:'2026', category:'Late Night', bg:'bg-5', img:'/images/food/dolarshop.jpg',
+      desc:'너무 마니 머거써요 탄생짤이 찍힌 곳!' },
+    { id:'fd6', title:'한강라면', date:'2025', category:'Late Night', bg:'bg-1', img:'/images/food/hankangramen.JPG',
+      desc:'We ran 2 miles just to eat ramen lolol this was lowkey core memory. Ramen by 한강 really did hit different. Remember the moment you cracked an egg and it splashed all over the icecream container?' },
+    { id:'fd7', title:'찡긋 egg', date:'2025', category:'Snack', bg:'bg-5', img:'/images/food/egg.jpg',
+      desc:'그냥 너 찡긋하는 얼굴이 귀여워서 넣음 ㅎ' },
+    { id:'fd8', title:'Our 100 Day Meal', date:'2025', category:'Dinner', bg:'bg-5', img:'/images/food/peterluger.jpg',
+      desc:'Peter Luger! We went here for our 100th day celebration. Random detail I remember from this day is that you were almost late trying to get flowers for me, and that you bumoed into Semin randomly because he used to live near that corner.' },
+    { id:'fd9', title:'ggakbok', date:'2025', category:'Snack', bg:'bg-5', img:'/images/food/ggakbok.jpg',
+      desc:'열심히 운동하고 먹은 깍두기 볶음밥과 같이 곁들여 마신 수박주스의 조합은 정말 ... 사랑이었어' },
+    { id:'fd10', title:'Domo Domo', date:'2025', category:'Dinner', bg:'bg-5', img:'/images/food/domodomo.jpg',
+      desc:'우리 사귀기로 처음 공개하고 수아연이랑 처음 다같이 한 저녁식사. 이날 너가 유독 긴장했었던게 기억나!' },
+    { id:'fd11', title:'jolibee', date:'2026', category:'Late Night', bg:'bg-5', img:'/images/food/jolibee.jpg',
+      desc:'No words. IYKYK.' },
+    { id:'fd12', title:'Same Ol Kimura', date:'2026', category:'Late Night', bg:'bg-5', img:'/images/food/kimura.jpg',
+      desc:'언제 먹어도 맛있는 키무라 나베. 겨울에 항상 너무 땡김.' },
+    { id:'fd13', title:'Chipotle', date:'2025', category:'Snack', bg:'bg-5', img:'/images/food/chipotle.jpg',
+      desc:'Yet another time big backing after running 2 miles. No blame to you because it is me who can not run for life... Yes I admit. This Chipotle bowl HIT though.' },
+    { id:'fd14', title:'I like chicken everybody like chicken', date:'2026', category:'Dinner', bg:'bg-5', img:'/images/food/chicken.jpg',
+      desc:'먹방 최고기록 갱신한 날. 치킨 다리를 쌓아놓고 먹으니까 세상 다 가진 기분이었어.' },
+    { id:'fd15', title:'Le Tete D Or', date:'2026', category:'Lunch', bg:'bg-5', img:'/images/food/letete.jpg',
+      desc:'Your first time eating out with my parents! SO wholesome. My parents love you<3' },
+    { id:'fd16', title:'Aligoat', date:'2026', category:'Dinner', bg:'bg-5', img:'/images/food/aligoat.jpg',
+      desc:'The almost 2 hours wait was worth it. Shoutout to our server who responded to our complaints with great kindness.' },
+    { id:'fd17', title:'가정식 French Diner', date:'2026', category:'Dinner', bg:'bg-5', img:'/images/food/frenchdindin.jpg',
+      desc:'Honestly nothing was really special about this place, but I just really enjoyed having dinner hear. Things felt very at-home and cozy. Beef and potato soup thingy was my favorite. ' },
+    { id:'fd18', title:'Froyo in Korea', date:'2026', category:'Dinner', bg:'bg-5', img:'/images/food/froyo.jpg',
+      desc:'We have tried so many froyo places together but this place was the first time we had froyo together back in Korea. Froyo paired so well with olive oil and pepper.' },
+    { id:'fd19', title:'Lunch at Louisiana Museum in Denmark', date:'2026', category:'Lunch', bg:'bg-5', img:'/images/food/louisiana.jpg',
+      desc:'OKAY LET ME SAY THIS UPFRONT this restaurant we went in Louisiana Museum was underrated. I was just in so much pain due to my cramp and did not fully get to appreciate how good everything was here. For a museum food, I dare say this place was top notch. My soup was so buttery and creamy and the chicken you got was seasoned flawlessly. Also, thank you SO much again for tolerating me going to the bathroom every 5 minutes. Your patience meant a lot to me this day.' },
+    { id:'fd20', title:'WTF', date:'2026', category:'Lunch', bg:'bg-5', img:'/images/food/wtf.jpg',
+      desc:'Yeah. Our comfort restaurant in London. Will forever hold a special place in my heart along with Dopi.' },
+    { id:'fd21', title:'Thirteen Water', date:'2025', category:'Lunch', bg:'bg-5', img:'/images/food/thirteenwater.jpg',
+      desc:'Our first omakase together! 너가 생일 축하해주면서 사줘서 더더 맛있고 부드럽고 살살 녹았던 ..<3' },
+    { id:'fd22', title:'Sourdough Pizza You Would Not Shut Up About', date:'2026', category:'Lunch', bg:'bg-5', img:'/images/food/sailsbury.jpg',
+      desc:'Good pizza' },
+    { id:'fd23', title:'ONYX', date:'2026', category:'Dinner', bg:'bg-5', img:'/images/food/onyx.jpg',
+      desc:'예뿐 드레스 입구 너랑 마주 앉아서 와인이랑 음식 먹어서 기분이 넘 조아써 이날' },
+    { id:'fd24', title:'Home-made Pizza', date:'2025', category:'Lunch', bg:'bg-5', img:'/images/food/pizza.jpg',
+      desc:'First time making Pizza together! 이 외에도 같이 요리한 음식 중에 맛있는거 많았는데, 피자가 뭔가 처음으로 seriously 하게 만든거 같아서 넣어봤어 ㅎㅎ' },
+  ]
+};
+
+// ══════════════════════════════════════════════════════
+// COUNTER
+// ══════════════════════════════════════════════════════
+function updateCounter() {
+  const diff = Date.now() - START_DATE;
+  document.getElementById('cnt-days').textContent   = Math.floor(diff/86400000).toLocaleString();
+  document.getElementById('cnt-months').textContent = Math.floor(diff/86400000/30.44).toLocaleString();
+  document.getElementById('cnt-hours').textContent  = Math.floor(diff/3600000).toLocaleString();
+}
+
+// ══════════════════════════════════════════════════════
+// CARDS & ROWS
+// ══════════════════════════════════════════════════════
+function buildCard(m) {
+  const card = document.createElement('div');
+  card.className = 'card' + (m.wide ? ' card-wide' : '');
+  card.onclick = () => openModal(m.id);
+  const inner = m.img
+    ? `<img class="card-img" src="${m.img}" alt="${m.title}" loading="lazy" style="object-position:${m.imgPosition || 'center'}">`
+    : `<div class="card-placeholder ${m.bg}">${m.title}</div>`;
+  card.innerHTML = inner + `<div class="card-overlay"><div class="card-label">${m.title}</div><div class="card-sublabel">${m.date}</div></div>`;
+  return card;
+}
+
+function populateRow(id, items) {
+  const el = document.getElementById(id);
+  if (el) items.forEach(m => el.appendChild(buildCard(m)));
+}
+
+function buildAllRows() {
+  populateRow('row-featured',   memories.featured);
+  populateRow('row-travels', memories.travels);
+  populateRow('row-fun',      memories.fun);
+
+  populateRow('row-food',       memories.food);
+}
+
+// ══════════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════════
+const allMem = Object.values(memories).flat();
+allMem.push({
+  id:'hero', title:'Our Story Begins Here', date:'May 2024 – May 2025',
+  category:'Anniversary', bg:'bg-1',
+  desc:"A whole year. 365 days of choosing each other. Of adventures and quiet Sunday mornings, first fights and midnight laughs, road trips and rainy days spent doing nothing at all. This is our story — and it's only just beginning."
+});
+
+function openModal(id) {
+  const m = allMem.find(x => x.id === id); if (!m) return;
+  const ph = document.getElementById('modal-ph');
+  ph.className = 'modal-hero-placeholder ' + (m.bg || 'bg-1');
+  ph.textContent = m.title;
+  if (m.img) { ph.style.cssText=`background-image:url('${m.img}');background-size:${m.modalSize||'cover'};background-position:center;`; ph.textContent=''; }
+  else ph.style.cssText = '';
+  document.getElementById('modal-title').textContent = m.title;
+  document.getElementById('modal-date').textContent  = m.date;
+  document.getElementById('modal-cat').textContent   = m.category;
+  document.getElementById('modal-desc').textContent  = m.desc;
+  const heartBtn = document.getElementById('heart-btn');
+  heartBtn.dataset.memId = id;
+  heartBtn.classList.toggle('loved', lovedMemories.has(id));
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── VIDEO OVERLAY ──
+function openVideo() {
+  const overlay = document.getElementById('video-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('relive-video').play();
+}
+function closeVideo() {
+  const overlay = document.getElementById('video-overlay');
+  overlay.style.display = 'none';
+  document.body.style.overflow = '';
+  const vid = document.getElementById('relive-video');
+  vid.pause();
+  vid.currentTime = 0;
+}
+function closeVideoOnBackdrop(e) { if (e.target.id === 'video-overlay') closeVideo(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+
+const lovedMemories = new Set();
+function toggleHeart() {
+  const btn = document.getElementById('heart-btn');
+  const id  = btn.dataset.memId;
+  if (lovedMemories.has(id)) {
+    lovedMemories.delete(id);
+    btn.classList.remove('loved');
+  } else {
+    lovedMemories.add(id);
+    btn.classList.add('loved');
+    btn.animate([{transform:'scale(1.4)'},{transform:'scale(1.15)'}],{duration:300,easing:'ease-out'});
+  }
+}
+
+function closeModalOnBackdrop(e) { if (e.target.id==='modal') closeModal(); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('solid', window.scrollY > 60);
+});
+</script>
+</body>
+</html>
